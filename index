@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Próximamente · Curso ValClabs en Hotmart</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --teal:   #085041;
+  --teal-m: #1D9E75;
+  --teal-l: #C8EDD9;
+  --coral:  #D85A30;
+  --coral-l:#FFF0EA;
+  --amber:  #EF9F27;
+  --dark:   #1A1A18;
+  --mid:    #888780;
+  --border: #E8E8E4;
+  --bg:     #FAFAF7;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── FONDO decorativo ── */
+.bg-layer {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 50% at 5% 20%, rgba(29,158,117,.10) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 45% at 95% 80%, rgba(216,90,48,.09) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 80% 5%,  rgba(239,159,39,.07) 0%, transparent 60%);
+}
+.bg-dots {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(circle, #ccc 1px, transparent 1px);
+  background-size: 38px 38px;
+  opacity: .35;
+}
+
+/* ── WRAPPER ── */
+.wrapper {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 3rem 1.5rem 4rem;
+}
+
+/* ── CARD principal ── */
+.card {
+  width: 100%; max-width: 520px;
+  background: #fff;
+  border-radius: 28px;
+  border: 1.5px solid var(--border);
+  box-shadow: 0 24px 80px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+  overflow: hidden;
+  animation: rise .7s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── HEADER de la card ── */
+.card-header {
+  background: var(--teal);
+  padding: 2.5rem 2rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.card-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 110% 110%, rgba(216,90,48,.35) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at -10% -10%, rgba(239,159,39,.25) 0%, transparent 55%);
+}
+/* líneas diagonales decorativas */
+.card-header::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    -55deg,
+    transparent, transparent 28px,
+    rgba(255,255,255,.03) 28px, rgba(255,255,255,.03) 29px
+  );
+}
+
+.logo-mark {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 30px;
+  padding: 6px 16px;
+  margin-bottom: 1.5rem;
+}
+.logo-mark span {
+  font-size: 12px; font-weight: 800; color: rgba(255,255,255,.9);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.logo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal-m); }
+
+.pronto-badge {
+  position: relative; z-index: 1;
+  display: inline-block;
+  background: var(--coral);
+  color: #fff;
+  font-size: 11px; font-weight: 800;
+  padding: 5px 16px; border-radius: 20px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 1.1rem;
+  animation: pulse-badge 2.5s ease infinite;
+}
+@keyframes pulse-badge {
+  0%,100% { box-shadow: 0 0 0 0 rgba(216,90,48,.5); }
+  50%      { box-shadow: 0 0 0 10px rgba(216,90,48,0); }
+}
+
+.card-header h1 {
+  position: relative; z-index: 1;
+  font-family: 'Playfair Display', serif;
+  font-size: 30px; font-weight: 800;
+  color: #fff; line-height: 1.15;
+  letter-spacing: -.5px;
+  margin-bottom: .65rem;
+}
+.card-header h1 em { font-style: italic; color: var(--amber); }
+
+.card-header p {
+  position: relative; z-index: 1;
+  font-size: 14px; color: rgba(255,255,255,.72);
+  line-height: 1.7; max-width: 360px; margin: 0 auto;
+}
+
+/* ── BENEFICIOS ── */
+.benefits {
+  padding: 1.6rem 2rem 0;
+  display: grid; gap: 10px;
+}
+.benefit {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: .75rem 1rem;
+  background: var(--bg);
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  animation: rise .7s cubic-bezier(.22,1,.36,1) both;
+}
+.benefit:nth-child(1) { animation-delay: .1s; }
+.benefit:nth-child(2) { animation-delay: .2s; }
+.benefit:nth-child(3) { animation-delay: .3s; }
+.benefit-icon {
+  font-size: 18px; flex-shrink: 0; margin-top: 1px;
+  width: 34px; height: 34px;
+  background: #fff; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--border);
+}
+.benefit-text b { display: block; font-size: 13.5px; font-weight: 700; color: var(--dark); margin-bottom: 1px; }
+.benefit-text span { font-size: 12px; color: var(--mid); line-height: 1.45; }
+
+/* ── SEPARADOR ── */
+.sep {
+  display: flex; align-items: center; gap: 12px;
+  padding: 1.4rem 2rem .4rem;
+}
+.sep-line { flex: 1; height: 1px; background: var(--border); }
+.sep-text { font-size: 11px; font-weight: 700; color: var(--mid); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+
+/* ── FORMULARIO ── */
+.form-area { padding: 0 2rem 2rem; }
+
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 12px; font-weight: 700; color: var(--mid);
+  text-transform: uppercase; letter-spacing: .8px;
+  margin-bottom: 7px;
+}
+.field input {
+  width: 100%;
+  padding: .85rem 1.1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px; color: var(--dark);
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  outline: none;
+}
+.field input::placeholder { color: #BBBBBB; }
+.field input:focus {
+  border-color: var(--teal-m);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(29,158,117,.1);
+}
+.field input.error { border-color: var(--coral); box-shadow: 0 0 0 4px rgba(216,90,48,.1); }
+
+.submit-btn {
+  width: 100%; padding: 1.05rem;
+  background: var(--teal);
+  color: #fff;
+  border: none; border-radius: 16px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px; font-weight: 800;
+  letter-spacing: .3px;
+  cursor: pointer;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 6px 22px rgba(8,80,65,.3);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 18px;
+}
+.submit-btn:hover { background: #063d31; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(8,80,65,.35); }
+.submit-btn:active { transform: scale(.98); }
+.submit-btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+.submit-btn .btn-arrow { font-size: 18px; transition: transform .2s; }
+.submit-btn:hover .btn-arrow { transform: translateX(4px); }
+
+.privacy-note {
+  margin-top: 12px;
+  font-size: 11.5px; color: var(--mid);
+  text-align: center; line-height: 1.6;
+}
+.privacy-note a { color: var(--teal-m); text-decoration: none; font-weight: 600; }
+
+/* ── CONTADOR ── */
+.counter-strip {
+  margin: 0 2rem;
+  padding: .9rem 1.1rem;
+  background: var(--coral-l);
+  border: 1.5px solid rgba(216,90,48,.2);
+  border-radius: 14px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 1.2rem;
+}
+.counter-icon { font-size: 18px; }
+.counter-text { font-size: 13px; color: var(--dark); line-height: 1.4; }
+.counter-text b { font-weight: 800; color: var(--coral); }
+
+/* ── SUCCESS STATE ── */
+.success-state {
+  display: none;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  animation: rise .5s cubic-bezier(.22,1,.36,1) both;
+}
+.success-icon {
+  width: 72px; height: 72px;
+  background: var(--teal-l);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  margin: 0 auto 1.25rem;
+  animation: boing .6s cubic-bezier(.22,1,.36,1);
+}
+@keyframes boing {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.success-state h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 800;
+  color: var(--dark); margin-bottom: .6rem;
+  letter-spacing: -.4px;
+}
+.success-state h2 em { color: var(--teal-m); font-style: italic; }
+.success-state p { font-size: 14px; color: var(--mid); line-height: 1.7; max-width: 300px; margin: 0 auto 1.5rem; }
+.success-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.success-chip {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 12px; font-weight: 600; color: var(--dark);
+}
+
+/* ── FOOTER ── */
+.page-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 12px; color: var(--mid);
+  animation: rise .7s .4s cubic-bezier(.22,1,.36,1) both;
+}
+.page-footer a { color: var(--teal-m); font-weight: 700; text-decoration: none; }
+
+/* ── LOADING spinner ── */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── error msg ── */
+.err-msg { font-size: 12px; color: var(--coral); margin-top: 5px; font-weight: 600; display: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .wrapper { padding: 2rem 1rem 3rem; }
+  .card-header { padding: 2rem 1.5rem 1.75rem; }
+  .card-header h1 { font-size: 26px; }
+  .benefits, .form-area, .counter-strip, .sep { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .counter-strip { margin: 0 1.5rem 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="bg-dots"></div>
+
+<div class="wrapper">
+
+  <div class="card">
+
+    <!-- HEADER -->
+    <div class="card-header">
+      <div class="logo-mark">
+        <div class="logo-dot"></div>
+        <span>ValClabs</span>
+      </div>
+      <div class="pronto-badge">🚀 Próximamente en Hotmart</div>
+      <h1>El curso que te enseña a<br>trabajar con <em>datos reales</em></h1>
+      <p>Sé el primero en enterarte cuando abramos inscripciones y accede a descuentos <strong style="color:rgba(255,255,255,.9)">exclusivos para early birds</strong>.</p>
+    </div>
+
+    <!-- BENEFICIOS -->
+    <div class="benefits">
+      <div class="benefit">
+        <div class="benefit-icon">🎯</div>
+        <div class="benefit-text">
+          <b>Descuento exclusivo para los primeros</b>
+          <span>Solo los inscritos en esta lista tendrán acceso al precio de lanzamiento.</span>
+        </div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">⚡</div>
+        <div class="benefit-text">
+          <b>Notificación antes que nadie</b>
+          <span>Te avisamos 24h antes de abrir las inscripciones al público general.</span>
+        </div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">🔒</div>
+        <div class="benefit-text">
+          <b>Precio bloqueado desde el día 1</b>
+          <span>Tu descuento queda reservado desde hoy, sin importar cuándo abran las inscripciones.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTADOR SOCIAL PROOF -->
+    <div class="sep">
+      <div class="sep-line"></div>
+      <div class="sep-text">Reserva tu lugar</div>
+      <div class="sep-line"></div>
+    </div>
+
+    <div class="counter-strip">
+      <span class="counter-icon">🔥</span>
+      <div class="counter-text">
+        <b>¡Los cupos con descuento son limitados!</b> Deja tus datos y asegura el tuyo.
+      </div>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="form-area" id="form-area">
+      <div class="field">
+        <label for="name">Tu nombre</label>
+        <input type="text" id="name" placeholder="¿Cómo te llamas?" autocomplete="given-name">
+        <div class="err-msg" id="name-err">Por favor escribe tu nombre.</div>
+      </div>
+      <div class="field">
+        <label for="email">Tu correo electrónico</label>
+        <input type="email" id="email" placeholder="tucorreo@email.com" autocomplete="email">
+        <div class="err-msg" id="email-err">Ingresa un correo válido.</div>
+      </div>
+
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">
+        <span id="btn-text">Quiero mi descuento exclusivo</span>
+        <span class="btn-arrow" id="btn-arrow">→</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <p class="privacy-note">
+        🔒 Tus datos están seguros. Solo te escribiremos para avisarte del lanzamiento.<br>
+        Sin spam, prometido. · <a href="#">Política de privacidad</a>
+      </p>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-state" id="success-state">
+      <div class="success-icon">✅</div>
+      <h2>¡Ya estás en la<br><em>lista VIP!</em></h2>
+      <p>Te notificaremos antes del lanzamiento oficial con tu código de descuento exclusivo. ¡Nos vemos pronto!</p>
+      <div class="success-chips">
+        <span class="success-chip">📧 Revisa tu bandeja</span>
+        <span class="success-chip">🚀 Curso en Hotmart</span>
+        <span class="success-chip">🎁 Descuento reservado</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    Hecho con 💚 por <a href="https://www.instagram.com/valclabs" target="_blank">@valclabs</a>
+    &nbsp;·&nbsp; Próximamente en <strong>Hotmart</strong>
+  </div>
+
+</div>
+
+<script>
+  // ──────────────────────────────────────────────────────────────
+  // PASO 1: Reemplaza esta URL con la de tu Google Apps Script
+
+
+  // ✅ URL conectada a Google Sheets ValClabs
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvkvOVa1v2LeED2BeW4gARlegusD8ygVGFXLxmyyhaiCqphimWH05Qonz7HKln-8sjoQ/exec';
+
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function setLoading(isLoading) {
+    const btn   = document.getElementById('submit-btn');
+    const txt   = document.getElementById('btn-text');
+    const arrow = document.getElementById('btn-arrow');
+    const spin  = document.getElementById('spinner');
+    btn.disabled = isLoading;
+    txt.textContent = isLoading ? 'Enviando...' : 'Quiero mi descuento exclusivo';
+    arrow.style.display = isLoading ? 'none' : 'inline';
+    spin.style.display  = isLoading ? 'block' : 'none';
+  }
+
+  function showError(fieldId, errId, show) {
+    document.getElementById(fieldId).classList.toggle('error', show);
+    document.getElementById(errId).style.display = show ? 'block' : 'none';
+  }
+
+  async function submitForm() {
+    const name  = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    // Validaciones
+    let hasError = false;
+    if (!name) { showError('name', 'name-err', true); hasError = true; }
+    else        { showError('name', 'name-err', false); }
+
+    if (!email || !validateEmail(email)) { showError('email', 'email-err', true); hasError = true; }
+    else                                  { showError('email', 'email-err', false); }
+
+    if (hasError) return;
+
+    setLoading(true);
+
+    try {
+      const params = new URLSearchParams({
+        name:      name,
+        email:     email,
+        timestamp: new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' }),
+        source:    'Landing Page ValClabs'
+      });
+
+      await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString(), {
+        method: 'GET',
+        mode: 'no-cors'
+      });
+
+      // Mostrar success (no-cors no devuelve respuesta legible, asumimos éxito)
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('success-state').style.display = 'block';
+
+    } catch (err) {
+      alert('Ocurrió un error. Por favor intenta de nuevo.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Limpiar error al escribir
+  ['name', 'email'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      document.getElementById(id).classList.remove('error');
+      document.getElementById(id + '-err').style.display = 'none';
+    });
+    // Submit con Enter
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') submitForm();
+    });
+  });
+</script>
+
+<!--
+══════════════════════════════════════════════════════════════
+  INSTRUCCIONES PARA CONECTAR CON GOOGLE SHEETS
+══════════════════════════════════════════════════════════════
+
+PASO 1 — Crear tu Google Sheet:
+  1. Ve a sheets.google.com y crea una hoja nueva
+  2. En la fila 1 escribe estos encabezados exactamente:
+     A1: Timestamp  |  B1: Nombre  |  C1: Email  |  D1: Fuente
+
+PASO 2 — Crear el Google Apps Script:
+  1. En tu Google Sheet ve a: Extensiones → Apps Script
+  2. Borra todo el código que aparece y pega este:
+
+─────────────────────────────────────────────────────────────
+function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const { name, email, timestamp, source } = e.parameter;
+  sheet.appendRow([timestamp, name, email, source]);
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: 'ok' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+─────────────────────────────────────────────────────────────
+
+PASO 3 — Publicar el script:
+  1. Clic en "Implementar" → "Nueva implementación"
+  2. Tipo: Aplicación web
+  3. Ejecutar como: Yo (tu cuenta)
+  4. Quién tiene acceso: Cualquier usuario
+  5. Clic en "Implementar" y copia la URL que aparece
+
+PASO 4 — Pegar la URL en este archivo:
+  Busca esta línea en el código JavaScript:
+    const GOOGLE_SCRIPT_URL = 'TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI';
+  Y reemplaza el texto con la URL copiada.
+
+✅ ¡Listo! Cada vez que alguien llene el formulario,
+   sus datos aparecerán automáticamente en tu Google Sheet.
+══════════════════════════════════════════════════════════════
+-->
+</body>
+</html>
