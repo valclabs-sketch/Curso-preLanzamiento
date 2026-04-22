@@ -1,364 +1,237 @@
-<!DOCTYPE html>
-<html lang="es">
+function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const { name, email, timestamp, source } = e.parameter;
+  sheet.appendRow([timestamp, name, email, source]);
+  enviarCorreoBienvenida(name, email);
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: 'ok' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function enviarCorreoBienvenida(nombre, email) {
+  const asunto = "Bienvenida a la lista VIP - Algo grande se viene";
+  const logoBase64 = "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";
+
+  const cuerpo = `<!DOCTYPE html>
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Próximamente · Data Analytics Profesional · ValClabs</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
-:root {
-  --teal:#085041; --teal-m:#1D9E75; --teal-l:#C8EDD9;
-  --coral:#D85A30; --coral-l:#FFF0EA; --amber:#EF9F27;
-  --purple:#534AB7; --dark:#1A1A18; --mid:#888780;
-  --border:#E8E8E4; --bg:#FAFAF7;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-
-.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 5% 20%,rgba(29,158,117,.10) 0%,transparent 60%),radial-gradient(ellipse 55% 45% at 95% 80%,rgba(216,90,48,.09) 0%,transparent 60%),radial-gradient(ellipse 40% 35% at 80% 5%,rgba(239,159,39,.07) 0%,transparent 60%)}
-.bg-dots{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,#ccc 1px,transparent 1px);background-size:38px 38px;opacity:.35}
-
-.wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:3rem 1.5rem 4rem;gap:1.5rem}
-
-/* CARD */
-.card{width:100%;max-width:540px;background:#fff;border-radius:28px;border:1.5px solid var(--border);box-shadow:0 24px 80px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.04);overflow:hidden;animation:rise .7s cubic-bezier(.22,1,.36,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-
-/* HEADER */
-.card-header{background:var(--teal);padding:2.5rem 2rem 2rem;text-align:center;position:relative;overflow:hidden}
-.card-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 110% 110%,rgba(216,90,48,.35) 0%,transparent 55%),radial-gradient(ellipse 60% 50% at -10% -10%,rgba(239,159,39,.25) 0%,transparent 55%)}
-.card-header::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-55deg,transparent,transparent 28px,rgba(255,255,255,.03) 28px,rgba(255,255,255,.03) 29px)}
-.logo-mark{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:30px;padding:6px 16px;margin-bottom:1.5rem}
-.logo-mark span{font-size:12px;font-weight:800;color:rgba(255,255,255,.9);letter-spacing:2px;text-transform:uppercase}
-.logo-dot{width:7px;height:7px;border-radius:50%;background:var(--teal-m)}
-.pronto-badge{position:relative;z-index:1;display:inline-block;background:var(--coral);color:#fff;font-size:11px;font-weight:800;padding:5px 16px;border-radius:20px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1.1rem;animation:pulse-badge 2.5s ease infinite}
-@keyframes pulse-badge{0%,100%{box-shadow:0 0 0 0 rgba(216,90,48,.5)}50%{box-shadow:0 0 0 10px rgba(216,90,48,0)}}
-.card-header h1{position:relative;z-index:1;font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.5px;margin-bottom:.65rem}
-.card-header h1 em{font-style:italic;color:var(--amber)}
-.card-header p{position:relative;z-index:1;font-size:14px;color:rgba(255,255,255,.72);line-height:1.7;max-width:360px;margin:0 auto}
-
-/* BENEFITS */
-.benefits{padding:1.5rem 2rem 0;display:grid;gap:10px}
-.benefit{display:flex;align-items:flex-start;gap:10px;padding:.75rem 1rem;background:var(--bg);border-radius:14px;border:1.5px solid var(--border)}
-.benefit-icon{font-size:18px;flex-shrink:0;width:34px;height:34px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border)}
-.benefit-text b{display:block;font-size:13.5px;font-weight:700;color:var(--dark);margin-bottom:1px}
-.benefit-text span{font-size:12px;color:var(--mid);line-height:1.45}
-
-/* SEP */
-.sep{display:flex;align-items:center;gap:12px;padding:1.4rem 2rem .4rem}
-.sep-line{flex:1;height:1px;background:var(--border)}
-.sep-text{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
-
-/* COUNTER */
-.counter-strip{margin:0 2rem 1.2rem;padding:.9rem 1.1rem;background:var(--coral-l);border:1.5px solid rgba(216,90,48,.2);border-radius:14px;display:flex;align-items:center;gap:10px}
-.counter-icon{font-size:18px}
-.counter-text{font-size:13px;color:var(--dark);line-height:1.4}
-.counter-text b{font-weight:800;color:var(--coral)}
-
-/* FORM */
-.form-area{padding:0 2rem 2rem}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
-.field input{width:100%;padding:.85rem 1.1rem;border:1.5px solid var(--border);border-radius:14px;background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--dark);transition:border-color .2s,box-shadow .2s,background .2s;outline:none}
-.field input::placeholder{color:#BBBBBB}
-.field input:focus{border-color:var(--teal-m);background:#fff;box-shadow:0 0 0 4px rgba(29,158,117,.1)}
-.field input.error{border-color:var(--coral);box-shadow:0 0 0 4px rgba(216,90,48,.1)}
-.submit-btn{width:100%;padding:1.05rem;background:var(--teal);color:#fff;border:none;border-radius:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;box-shadow:0 6px 22px rgba(8,80,65,.3);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px}
-.submit-btn:hover{background:#063d31;transform:translateY(-2px);box-shadow:0 10px 30px rgba(8,80,65,.35)}
-.submit-btn:active{transform:scale(.98)}
-.submit-btn:disabled{opacity:.65;cursor:not-allowed;transform:none}
-.submit-btn .btn-arrow{font-size:18px;transition:transform .2s}
-.submit-btn:hover .btn-arrow{transform:translateX(4px)}
-.privacy-note{margin-top:12px;font-size:11.5px;color:var(--mid);text-align:center;line-height:1.6}
-.err-msg{font-size:12px;color:var(--coral);margin-top:5px;font-weight:600;display:none}
-.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* SUCCESS */
-.success-state{display:none;padding:2.5rem 2rem;text-align:center;animation:rise .5s cubic-bezier(.22,1,.36,1) both}
-.success-icon{width:72px;height:72px;background:var(--teal-l);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 1.25rem;animation:boing .6s cubic-bezier(.22,1,.36,1)}
-@keyframes boing{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
-.success-state h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:var(--dark);margin-bottom:.6rem;letter-spacing:-.4px}
-.success-state h2 em{color:var(--teal-m);font-style:italic}
-.success-state p{font-size:14px;color:var(--mid);line-height:1.7;max-width:300px;margin:0 auto 1.5rem}
-.success-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.success-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--dark)}
-
-/* COURSE SECTION */
-.course-section{width:100%;max-width:540px;animation:rise .7s .15s cubic-bezier(.22,1,.36,1) both}
-.course-intro{text-align:center;margin-bottom:1.25rem}
-.eyebrow{display:inline-block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.8px;color:var(--teal-m);margin-bottom:.5rem}
-.course-intro h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:var(--dark);line-height:1.15;letter-spacing:-.4px;margin-bottom:.45rem}
-.course-intro h2 em{font-style:italic;color:var(--coral)}
-.course-intro p{font-size:14px;color:var(--mid);line-height:1.7}
-
-/* MÓDULOS ACCORDION */
-.modules{display:grid;gap:10px}
-.mod{background:#fff;border-radius:20px;border:1.5px solid var(--border);overflow:hidden;cursor:pointer;transition:box-shadow .25s,transform .2s}
-.mod:hover{box-shadow:0 8px 30px rgba(0,0,0,.08);transform:translateY(-2px)}
-.mod.open{box-shadow:0 8px 30px rgba(0,0,0,.09)}
-.mod-header{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;user-select:none}
-.mod-num{width:36px;height:36px;flex-shrink:0;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
-.mod-titles{flex:1}
-.mod-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px}
-.mod-name{font-size:14.5px;font-weight:700;color:var(--dark);line-height:1.25}
-.mod-chevron{font-size:20px;color:var(--mid);transition:transform .35s cubic-bezier(.22,1,.36,1);flex-shrink:0;line-height:1}
-.mod.open .mod-chevron{transform:rotate(180deg)}
-.mod-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.22,1,.36,1),padding .3s;padding:0 1.25rem}
-.mod.open .mod-body{max-height:280px;padding:0 1.25rem .9rem}
-.mod-hook{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:.65rem;padding-top:.05rem;font-style:italic}
-.mod-items{display:grid;gap:7px}
-.mod-item{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:#555;line-height:1.5}
-.mod-bullet{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px}
-
-/* colores módulos */
-.m1 .mod-num{background:var(--teal-m)} .m1 .mod-label{color:var(--teal-m)} .m1 .mod-bullet{background:var(--teal-m)} .m1.open{border-color:rgba(29,158,117,.4)}
-.m2 .mod-num{background:var(--purple)} .m2 .mod-label{color:var(--purple)} .m2 .mod-bullet{background:var(--purple)} .m2.open{border-color:rgba(83,74,183,.4)}
-.m3 .mod-num{background:var(--coral)}  .m3 .mod-label{color:var(--coral)}  .m3 .mod-bullet{background:var(--coral)}  .m3.open{border-color:rgba(216,90,48,.4)}
-.m4 .mod-num{background:var(--amber)}  .m4 .mod-label{color:var(--amber)}  .m4 .mod-bullet{background:var(--amber)}  .m4.open{border-color:rgba(239,159,39,.4)}
-
-/* STATS */
-.course-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.stat{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:.8rem .5rem;text-align:center}
-.stat-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--teal-m);display:block;margin-bottom:2px}
-.stat-lbl{font-size:11px;color:var(--mid);font-weight:500}
-
-/* FOOTER */
-.page-footer{text-align:center;font-size:12px;color:var(--mid);animation:rise .7s .4s cubic-bezier(.22,1,.36,1) both}
-.page-footer a{color:var(--teal-m);font-weight:700;text-decoration:none}
-
-@media(max-width:480px){
-  .wrapper{padding:2rem 1rem 3rem}
-  .card-header{padding:2rem 1.5rem 1.75rem}
-  .card-header h1{font-size:24px}
-  .benefits,.form-area,.sep{padding-left:1.5rem;padding-right:1.5rem}
-  .counter-strip{margin:0 1.5rem 1.2rem}
-  .mod-name{font-size:13.5px}
-}
-</style>
 </head>
-<body>
+<body style="margin:0;padding:0;background:#F5F5F3;font-family:Helvetica Neue,Arial,sans-serif;">
 
-<div class="bg-layer"></div>
-<div class="bg-dots"></div>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F3;padding:32px 16px;">
+  <tr>
+    <td align="center">
+      <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;background:#ffffff;border-radius:24px;overflow:hidden;border:1px solid #E8E8E4;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
 
-<div class="wrapper">
+        <!-- HEADER BLANCO CON LOGO -->
+        <tr>
+          <td style="background:#ffffff;padding:36px 32px 24px;text-align:center;border-bottom:1px solid #F0F0EE;">
+            <img src="data:image/png;base64,${logoBase64}" alt="ValClabs" width="180"
+                 style="display:block;margin:0 auto;max-width:180px;" />
+          </td>
+        </tr>
 
-  <!-- CARD PRINCIPAL -->
-  <div class="card">
-    <div class="card-header">
-      <div class="logo-mark"><div class="logo-dot"></div><span>ValClabs</span></div>
-      <div class="pronto-badge">🚀 Próximamente en Hotmart</div>
-      <h1>Aprende <em>Data Analytics</em><br>y trabaja en dólares</h1>
-      <p>GA4 · Looker Studio · Power BI para el Mercado Remoto. Sé el primero en enterarte y accede al <strong style="color:rgba(255,255,255,.9)">precio de lanzamiento exclusivo.</strong></p>
-    </div>
+        <!-- BANDA CORAL DE BIENVENIDA -->
+        <tr>
+          <td style="background:#D85A30;padding:14px 32px;text-align:center;">
+            <span style="color:#ffffff;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;">LISTA VIP · ACCESO ANTICIPADO</span>
+          </td>
+        </tr>
 
-    <div class="benefits">
-      <div class="benefit">
-        <div class="benefit-icon">🎯</div>
-        <div class="benefit-text">
-          <b>Descuento exclusivo para los primeros</b>
-          <span>Solo los inscritos en esta lista tendrán acceso al precio de lanzamiento.</span>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-icon">⚡</div>
-        <div class="benefit-text">
-          <b>Notificación antes que nadie</b>
-          <span>Te avisamos 24h antes de abrir las inscripciones al público general.</span>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-icon">🔒</div>
-        <div class="benefit-text">
-          <b>Precio bloqueado desde el día 1</b>
-          <span>Tu descuento queda reservado desde hoy, sin importar cuándo abran las inscripciones.</span>
-        </div>
-      </div>
-    </div>
+        <!-- TITULO PRINCIPAL -->
+        <tr>
+          <td style="background:#ffffff;padding:36px 32px 28px;text-align:center;">
+            <h1 style="color:#1A1A18;font-size:28px;margin:0 0 10px;line-height:1.25;font-weight:800;">
+              Hola, ${nombre}!<br>
+              <span style="color:#D85A30;">Ya eres parte del</span><br>
+              grupo VIP
+            </h1>
+            <p style="color:#888780;font-size:15px;margin:0;line-height:1.6;">
+              Y eso significa mas de lo que crees.
+            </p>
+          </td>
+        </tr>
 
-    <div class="sep"><div class="sep-line"></div><div class="sep-text">Reserva tu lugar</div><div class="sep-line"></div></div>
+        <!-- SEPARADOR DECORATIVO -->
+        <tr>
+          <td style="padding:0 32px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="border-top:2px solid #F0F0EE;"></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
 
-    <div class="counter-strip">
-      <span class="counter-icon">🔥</span>
-      <div class="counter-text"><b>¡Los cupos con descuento son limitados!</b> Deja tus datos y asegura el tuyo.</div>
-    </div>
+        <!-- CUERPO PRINCIPAL -->
+        <tr>
+          <td style="background:#ffffff;padding:28px 32px;">
 
-    <div class="form-area" id="form-area">
-      <div class="field">
-        <label for="name">Tu nombre</label>
-        <input type="text" id="name" placeholder="¿Cómo te llamas?" autocomplete="given-name">
-        <div class="err-msg" id="name-err">Por favor escribe tu nombre.</div>
-      </div>
-      <div class="field">
-        <label for="email">Tu correo electrónico</label>
-        <input type="email" id="email" placeholder="tucorreo@email.com" autocomplete="email">
-        <div class="err-msg" id="email-err">Ingresa un correo válido.</div>
-      </div>
-      <button class="submit-btn" id="submit-btn" onclick="submitForm()">
-        <span id="btn-text">Quiero mi descuento exclusivo</span>
-        <span class="btn-arrow" id="btn-arrow">→</span>
-        <div class="spinner" id="spinner"></div>
-      </button>
-      <p class="privacy-note">🔒 Tus datos están seguros. Solo te escribiremos para avisarte del lanzamiento. Sin spam, prometido.</p>
-    </div>
+            <p style="color:#1A1A18;font-size:16px;line-height:1.75;margin:0 0 20px;font-weight:500;">
+              Gracias por inscribirte. Acabas de asegurarte algo que
+              <strong style="color:#D85A30;">la mayoria no va a tener.</strong>
+            </p>
 
-    <div class="success-state" id="success-state">
-      <div class="success-icon">✅</div>
-      <h2>¡Ya estás en la<br><em>lista VIP!</em></h2>
-      <p>Te notificaremos antes del lanzamiento oficial con tu código de descuento exclusivo. ¡Nos vemos pronto!</p>
-      <div class="success-chips">
-        <span class="success-chip">📧 Revisa tu bandeja</span>
-        <span class="success-chip">🚀 Curso en Hotmart</span>
-        <span class="success-chip">💰 Descuento reservado</span>
-      </div>
-    </div>
-  </div>
+            <!-- CAJA ANTICIPACION -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <tr>
+                <td style="background:#FAFAF7;border-radius:16px;padding:22px 24px;border-left:4px solid #D85A30;">
+                  <p style="margin:0 0 10px;color:#1A1A18;font-size:15px;font-weight:800;line-height:1.4;">
+                    Sobre el precio... no te preocupes.
+                  </p>
+                  <p style="margin:0;color:#555555;font-size:14px;line-height:1.75;">
+                    Lo unico que te digo es esto: cuando llegue ese correo y veas tu descuento VIP,
+                    <strong style="color:#1A1A18;">te vas a ir de para atras.</strong>
+                    Y mas aun cuando veas todo lo que tiene para ti.
+                  </p>
+                </td>
+              </tr>
+            </table>
 
-  <!-- SECCIÓN CURSO -->
-  <div class="course-section">
-    <div class="course-intro">
-      <span class="eyebrow">✦ Lo que vas a aprender</span>
-      <h2>Tu camino hacia el<br>mercado de datos <em>remoto</em></h2>
-      <p>4 módulos prácticos. Herramientas reales.<br>Tu primer portafolio de analista.</p>
-    </div>
+            <!-- LO QUE VIENE -->
+            <p style="color:#1A1A18;font-size:15px;font-weight:700;margin:0 0 14px;">
+              Este curso te va a ensenar a:
+            </p>
 
-    <div class="modules">
+            <!-- ITEMS -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <tr>
+                <td style="padding:7px 0;border-bottom:1px solid #F5F5F3;">
+                  <table cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="width:28px;vertical-align:top;">
+                        <span style="display:inline-block;width:8px;height:8px;background:#1D9E75;border-radius:50%;margin-top:6px;"></span>
+                      </td>
+                      <td style="color:#444444;font-size:14px;line-height:1.6;">
+                        Leer datos reales de cualquier negocio con <strong>GA4</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:7px 0;border-bottom:1px solid #F5F5F3;">
+                  <table cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="width:28px;vertical-align:top;">
+                        <span style="display:inline-block;width:8px;height:8px;background:#534AB7;border-radius:50%;margin-top:6px;"></span>
+                      </td>
+                      <td style="color:#444444;font-size:14px;line-height:1.6;">
+                        Crear dashboards profesionales con <strong>Looker Studio</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:7px 0;border-bottom:1px solid #F5F5F3;">
+                  <table cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="width:28px;vertical-align:top;">
+                        <span style="display:inline-block;width:8px;height:8px;background:#D85A30;border-radius:50%;margin-top:6px;"></span>
+                      </td>
+                      <td style="color:#444444;font-size:14px;line-height:1.6;">
+                        Dominar <strong>Power BI</strong>, el estandar corporativo
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:7px 0;">
+                  <table cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="width:28px;vertical-align:top;">
+                        <span style="display:inline-block;width:8px;height:8px;background:#EF9F27;border-radius:50%;margin-top:6px;"></span>
+                      </td>
+                      <td style="color:#444444;font-size:14px;line-height:1.6;">
+                        Armar tu primer portafolio y posicionarte en el <strong>mercado remoto</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
 
-      <div class="mod m1 open" onclick="toggleMod(this)">
-        <div class="mod-header">
-          <div class="mod-num">01</div>
-          <div class="mod-titles">
-            <div class="mod-label">Módulo 1 · GA4</div>
-            <div class="mod-name">Rastro Digital — Lee el comportamiento real</div>
-          </div>
-          <span class="mod-chevron">⌄</span>
-        </div>
-        <div class="mod-body">
-          <div class="mod-hook">"¿Qué hace tu visitante cuando nadie lo ve?"</div>
-          <div class="mod-items">
-            <div class="mod-item"><div class="mod-bullet"></div>Las 5 métricas que todo cliente te va a pedir</div>
-            <div class="mod-item"><div class="mod-bullet"></div>Tu primer informe de tráfico profesional en 1 página</div>
-            <div class="mod-item"><div class="mod-bullet"></div>Datos que se convierten en decisiones de negocio reales</div>
-          </div>
-        </div>
-      </div>
+            <!-- CAJA ANTICIPACION 2 -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+              <tr>
+                <td style="background:#FFF8F0;border-radius:16px;padding:20px 24px;text-align:center;border:1.5px solid #EF9F27;">
+                  <p style="margin:0 0 6px;color:#7A4D00;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">
+                    Muy pronto en tu bandeja
+                  </p>
+                  <p style="margin:0;color:#1A1A18;font-size:15px;font-weight:700;line-height:1.5;">
+                    Tu precio VIP + todos los detalles del curso.<br>
+                    <span style="color:#D85A30;">Mantente pendiente.</span>
+                  </p>
+                </td>
+              </tr>
+            </table>
 
-      <div class="mod m2" onclick="toggleMod(this)">
-        <div class="mod-header">
-          <div class="mod-num">02</div>
-          <div class="mod-titles">
-            <div class="mod-label">Módulo 2 · Looker Studio</div>
-            <div class="mod-name">Visualización Profesional — Dashboards que impresionan</div>
-          </div>
-          <span class="mod-chevron">⌄</span>
-        </div>
-        <div class="mod-body">
-          <div class="mod-hook">"Dashboard útil vs. dashboard bonito — aquí aprendes la diferencia."</div>
-          <div class="mod-items">
-            <div class="mod-item"><div class="mod-bullet"></div>Conectar fuentes de datos sin escribir código</div>
-            <div class="mod-item"><div class="mod-bullet"></div>Las 6 reglas de diseño que lo cambian todo</div>
-            <div class="mod-item"><div class="mod-bullet"></div>Tu primer entregable real para un cliente</div>
-          </div>
-        </div>
-      </div>
+            <!-- SEPARADOR -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <tr>
+                <td style="border-top:1px solid #F0F0EE;font-size:0;">&nbsp;</td>
+              </tr>
+            </table>
 
-      <div class="mod m3" onclick="toggleMod(this)">
-        <div class="mod-header">
-          <div class="mod-num">03</div>
-          <div class="mod-titles">
-            <div class="mod-label">Módulo 3 · Power BI</div>
-            <div class="mod-name">Estructura Corporativa — El estándar de las empresas</div>
-          </div>
-          <span class="mod-chevron">⌄</span>
-        </div>
-        <div class="mod-body">
-          <div class="mod-hook">"¿Por qué Power BI si ya sé Looker Studio? Porque el mercado lo exige."</div>
-          <div class="mod-items">
-            <div class="mod-item"><div class="mod-bullet"></div>Limpiar datos: el 80% del trabajo real en analytics</div>
-            <div class="mod-item"><div class="mod-bullet"></div>Tu primer reporte interactivo publicado en la nube</div>
-            <div class="mod-item"><div class="mod-bullet"></div>El diferencial que te separa de los demás candidatos</div>
-          </div>
-        </div>
-      </div>
+            <!-- BOTON INSTAGRAM -->
+            <p style="color:#888780;font-size:14px;margin:0 0 16px;text-align:center;line-height:1.6;">
+              Mientras tanto, ven a conocerme por Instagram.
+              Ahi publico contenido sobre datos cada semana.
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+              <tr>
+                <td align="center">
+                  <table cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="background:#1A1A18;border-radius:12px;padding:13px 32px;">
+                        <a href="https://www.instagram.com/valclabs"
+                           style="color:#ffffff;font-size:14px;font-weight:800;text-decoration:none;letter-spacing:0.3px;">
+                          Ver @valclabs en Instagram
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
 
-      <div class="mod m4" onclick="toggleMod(this)">
-        <div class="mod-header">
-          <div class="mod-num">04</div>
-          <div class="mod-titles">
-            <div class="mod-label">Módulo 4 · Mercado Remoto</div>
-            <div class="mod-name">Aplicación Profesional — Entra al mercado remoto</div>
-          </div>
-          <span class="mod-chevron">⌄</span>
-        </div>
-        <div class="mod-body">
-          <div class="mod-hook">"Las herramientas que usan los analistas que ya trabajan de forma remota."</div>
-          <div class="mod-items">
-            <div class="mod-item"><div class="mod-bullet"></div>Tu primer portafolio que sí se destaca</div>
-            <div class="mod-item"><div class="mod-bullet"></div>LinkedIn y Upwork: los keywords que te encuentran</div>
-            <div class="mod-item"><div class="mod-bullet"></div>Cómo posicionarte para atraer oportunidades en análisis de datos</div>
-          </div>
-        </div>
-      </div>
+            <p style="color:#555555;font-size:14px;line-height:1.7;margin:0;text-align:center;">
+              Con mucho gusto,<br>
+              <strong style="color:#1A1A18;font-size:15px;">Val</strong>
+              <span style="color:#D85A30;font-weight:700;"> · ValClabs</span>
+            </p>
 
-    </div>
+          </td>
+        </tr>
 
-    <div class="course-stats">
-      <div class="stat"><span class="stat-val">14</span><span class="stat-lbl">Videos prácticos</span></div>
-      <div class="stat"><span class="stat-val">4</span><span class="stat-lbl">Herramientas reales</span></div>
-      <div class="stat"><span class="stat-val">100%</span><span class="stat-lbl">Orientado al trabajo remoto</span></div>
-    </div>
-  </div>
+        <!-- FOOTER -->
+        <tr>
+          <td style="background:#F5F5F3;padding:20px 32px;text-align:center;border-top:1px solid #E8E8E4;">
+            <p style="color:#AAAAAA;font-size:11.5px;margin:0 0 6px;line-height:1.7;">
+              Te escribiremos solo para avisarte del lanzamiento. Sin spam, prometido.
+            </p>
+            <a href="https://www.instagram.com/valclabs"
+               style="color:#D85A30;font-size:12px;font-weight:700;text-decoration:none;">
+              @valclabs
+            </a>
+          </td>
+        </tr>
 
-  <div class="page-footer">
-    Hecho con 💚 por <a href="https://www.instagram.com/valclabs" target="_blank">@valclabs</a>
-    &nbsp;·&nbsp; Próximamente en <strong>Hotmart</strong>
-  </div>
+      </table>
+    </td>
+  </tr>
+</table>
 
-</div>
-
-<script>
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLytCq8pszbauVVNixcI8jrJ8boa-n-5jtFAIAgM-rLupK0x9oUuyuLdf3uVLDIAXwkQ/exec';
-
-  function toggleMod(el) { el.classList.toggle('open'); }
-
-  function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
-
-  function setLoading(on) {
-    document.getElementById('submit-btn').disabled = on;
-    document.getElementById('btn-text').textContent = on ? 'Enviando...' : 'Quiero mi descuento exclusivo';
-    document.getElementById('btn-arrow').style.display = on ? 'none' : 'inline';
-    document.getElementById('spinner').style.display   = on ? 'block' : 'none';
-  }
-
-  function showError(fId, eId, show) {
-    document.getElementById(fId).classList.toggle('error', show);
-    document.getElementById(eId).style.display = show ? 'block' : 'none';
-  }
-
-  async function submitForm() {
-    const name  = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    let err = false;
-    if (!name)  { showError('name','name-err',true);  err=true; } else showError('name','name-err',false);
-    if (!email||!validateEmail(email)) { showError('email','email-err',true); err=true; } else showError('email','email-err',false);
-    if (err) return;
-    setLoading(true);
-    try {
-      const p = new URLSearchParams({ name, email, timestamp: new Date().toLocaleString('es-CO',{timeZone:'America/Bogota'}), source:'Landing ValClabs' });
-      await fetch(GOOGLE_SCRIPT_URL+'?'+p.toString(), { method:'GET', mode:'no-cors' });
-      document.getElementById('form-area').style.display    = 'none';
-      document.getElementById('success-state').style.display = 'block';
-    } catch(e) {
-      alert('Ocurrió un error. Por favor intenta de nuevo.');
-    } finally { setLoading(false); }
-  }
-
-  ['name','email'].forEach(id => {
-    document.getElementById(id).addEventListener('input',()=>{ document.getElementById(id).classList.remove('error'); document.getElementById(id+'-err').style.display='none'; });
-    document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') submitForm(); });
-  });
-</script>
 </body>
-</html>
+</html>`;
+
+  GmailApp.sendEmail(email, asunto, "", { htmlBody: cuerpo });
+}
+
+function probarCorreo() {
+  enviarCorreoBienvenida("Tu Nombre", Session.getActiveUser().getEmail());
+}
